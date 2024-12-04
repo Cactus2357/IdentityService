@@ -1,6 +1,9 @@
 package com.example.demo.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -24,7 +27,5 @@ public class User {
     String firstName;
     String lastName;
     LocalDate dob;
-
-    @OneToMany
     Set<String> roles;
 }
