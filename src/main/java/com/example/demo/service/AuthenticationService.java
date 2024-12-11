@@ -17,10 +17,8 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -30,13 +28,15 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.StringJoiner;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@Slf4j
 public class AuthenticationService {
-    private static final Logger log = LoggerFactory.getLogger(AuthenticationService.class);
     UserRepository userRepository;
+    PasswordEncoder passwordEncoder;
 
     @NonFinal
     @Value("${jwt.signerKey}")
@@ -53,16 +53,15 @@ public class AuthenticationService {
 
         boolean verified = signedJWT.verify(verifier);
 
-        return  IntrospectResponse.builder()
+        return IntrospectResponse.builder()
                 .valid(verified && expiration.after(new Date()))
                 .build();
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         User user = userRepository.findByUsername(request.getUsername())
-                .orElseThrow(()-> new AppException(ErrorCode.USER_NOT_EXISTED));
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         boolean authenticated = passwordEncoder.matches(request.getPassword(), user.getPassword());
 
         if (!authenticated) {
@@ -86,6 +85,7 @@ public class AuthenticationService {
                 .expirationTime(new Date(
                         Instant.now().plus(1, ChronoUnit.HOURS).toEpochMilli()
                 ))
+                .jwtID(UUID.randomUUID().toString())
                 .claim("scope", buildScope(user))
                 .build();
 
@@ -104,8 +104,15 @@ public class AuthenticationService {
 
     private String buildScope(User user) {
         StringJoiner scopeJoiner = new StringJoiner(" ");
+
         if (!CollectionUtils.isEmpty(user.getRoles())) {
-            user.getRoles().forEach(scopeJoiner::add);
+            user.getRoles().forEach(role -> {
+                scopeJoiner.add(role.getName());
+                if (!CollectionUtils.isEmpty(role.getPermissions())) {
+                    role.getPermissions()
+                            .forEach(permission -> scopeJoiner.add(permission.getName()));
+                }
+            });
         }
 
         return scopeJoiner.toString();
