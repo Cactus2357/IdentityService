@@ -3,6 +3,7 @@ package com.example.demo.service;
 import com.example.demo.dto.request.AuthenticationRequest;
 import com.example.demo.dto.request.IntrospectRequest;
 import com.example.demo.dto.request.LogoutRequest;
+import com.example.demo.dto.request.RefreshRequest;
 import com.example.demo.dto.response.AuthenticationResponse;
 import com.example.demo.dto.response.IntrospectResponse;
 import com.example.demo.entity.InvalidatedToken;
@@ -113,6 +114,34 @@ public class AuthenticationService {
         }
 
         return signedJWT;
+    }
+
+    public AuthenticationResponse refreshToken(RefreshRequest request)
+            throws ParseException, JOSEException {
+        SignedJWT signedJWT = verifyToken(request.getToken());
+
+        String jit = signedJWT.getJWTClaimsSet().getJWTID();
+        Date expiryTime = signedJWT.getJWTClaimsSet().getExpirationTime();
+
+        InvalidatedToken invalidatedToken = InvalidatedToken.builder()
+                .id(jit)
+                .expiryTime(expiryTime)
+                .build();
+
+        invalidatedTokenRepository.save(invalidatedToken);
+
+        String username = signedJWT.getJWTClaimsSet().getSubject();
+
+        User user = userRepository
+                .findByUsername(username)
+                .orElseThrow(() -> new AppException(ErrorCode.UNAUTHENTICATED));
+
+        var token = generateToken(user);
+
+        return AuthenticationResponse.builder()
+                .token(token)
+                .authenticated(true)
+                .build();
     }
 
     private String generateToken(User user) {
