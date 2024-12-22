@@ -77,20 +77,19 @@ public class GlobalExceptionHandler {
         } catch (IllegalArgumentException iae) {
         }
 
-        return ResponseEntity.badRequest().body(
-                ApiResponse.builder()
-                        .code(errorCode.getCode())
-                        .message(Objects.nonNull(attributes)
-                                ? mapAttribute(errorCode.getMessage(), attributes)
-                                : errorCode.getMessage())
-                        .build()
+        ApiResponse apiResponse = new ApiResponse();
+
+        apiResponse.setCode(errorCode.getCode());
+        apiResponse.setMessage(
+                Objects.nonNull(attributes) ? mapAttribute(errorCode.getMessage(), attributes) : errorCode.getMessage()
         );
+
+        return ResponseEntity.badRequest().body(apiResponse);
     }
 
     private String mapAttribute(String message, Map<String, Object> attributes) {
-        String min = String.valueOf(attributes.get(MIN_ATTRIBUTE));
+        String minValue = String.valueOf(attributes.get(MIN_ATTRIBUTE));
 
-        return message.replace("{" + MIN_ATTRIBUTE + "}",
-                min);
+        return message.replace("{" + MIN_ATTRIBUTE + "}", minValue);
     }
 }
