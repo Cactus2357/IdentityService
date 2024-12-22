@@ -1,7 +1,6 @@
 package com.example.demo.configuration;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -25,10 +24,11 @@ public class SecurityConfig {
             "/auth/token",
             "/auth/introspect",
             "/auth/logout",
+            "/auth/refresh",
     };
 
-    @Value("${jwt.signerKey}")
-    private String signerKey;
+    @Autowired
+    private CustomJwtDecoder customJwtDecoder;
 
     @Autowired
     private CustomJwtDecoder customJwtDecoder;

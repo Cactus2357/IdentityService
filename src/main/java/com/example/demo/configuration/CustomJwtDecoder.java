@@ -32,7 +32,8 @@ public class CustomJwtDecoder implements JwtDecoder {
         try {
             IntrospectResponse response = authenticationService.introspect(IntrospectRequest.builder()
                     .token(token)
-                    .build());
+                    .build()
+            );
 
             if (!response.isValid()) throw new JwtException("Invalid token");
         } catch (JOSEException | ParseException e) {
@@ -46,6 +47,8 @@ public class CustomJwtDecoder implements JwtDecoder {
                     .macAlgorithm(MacAlgorithm.HS512)
                     .build();
         }
+
+//        System.out.println(nimbusJwtDecoder);
 
         return nimbusJwtDecoder.decode(token);
     }

@@ -7,7 +7,6 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
@@ -21,12 +20,11 @@ import java.util.HashSet;
 @Slf4j
 public class ApplicationInitConfig {
 
-    @Autowired
     PasswordEncoder passwordEncoder;
 
     @Bean
     ApplicationRunner applicationRunner(UserRepository userRepository) {
-        return args -> {
+        return _ -> {
             if (userRepository.findByUsername("admin").isEmpty()) {
                 var roles = new HashSet<String>();
                 roles.add(Role.ADMIN.name());
