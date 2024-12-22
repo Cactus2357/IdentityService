@@ -47,7 +47,6 @@ public class AuthenticationController {
                 .build();
     }
 
-
     @PostMapping("/refresh")
     ApiResponse<AuthenticationResponse> refresh(@RequestBody RefreshRequest request)
             throws ParseException, JOSEException {
@@ -56,5 +55,4 @@ public class AuthenticationController {
                 .result(result)
                 .build();
     }
-
 }
