@@ -36,11 +36,7 @@ public class RoleService {
     }
 
     public List<RoleResponse> getAll() {
-        return roleRepository
-                .findAll()
-                .stream()
-                .map(roleMapper::toRoleResponse)
-                .toList();
+        return roleRepository.findAll().stream().map(roleMapper::toRoleResponse).toList();
     }
 
     public void delete(String role) {

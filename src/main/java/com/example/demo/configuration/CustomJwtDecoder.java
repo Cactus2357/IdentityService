@@ -30,10 +30,8 @@ public class CustomJwtDecoder implements JwtDecoder {
     @Override
     public Jwt decode(String token) throws JwtException {
         try {
-            IntrospectResponse response = authenticationService.introspect(IntrospectRequest.builder()
-                    .token(token)
-                    .build()
-            );
+            IntrospectResponse response = authenticationService.introspect(
+                    IntrospectRequest.builder().token(token).build());
 
             if (!response.isValid()) throw new JwtException("Invalid token");
         } catch (JOSEException | ParseException e) {
@@ -42,13 +40,12 @@ public class CustomJwtDecoder implements JwtDecoder {
 
         if (Objects.isNull(nimbusJwtDecoder)) {
             SecretKeySpec secretKeySpec = new SecretKeySpec(signerKey.getBytes(), "HS512");
-            nimbusJwtDecoder = NimbusJwtDecoder
-                    .withSecretKey(secretKeySpec)
+            nimbusJwtDecoder = NimbusJwtDecoder.withSecretKey(secretKeySpec)
                     .macAlgorithm(MacAlgorithm.HS512)
                     .build();
         }
 
-//        System.out.println(nimbusJwtDecoder);
+        //        System.out.println(nimbusJwtDecoder);
 
         return nimbusJwtDecoder.decode(token);
     }

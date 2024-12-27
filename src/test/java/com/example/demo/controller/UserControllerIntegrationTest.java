@@ -29,8 +29,10 @@ import java.time.LocalDate;
 public class UserControllerIntegrationTest {
     @Container
     static final MySQLContainer<?> MY_SQL_CONTAINER = new MySQLContainer<>("mysql:latest");
+
     @Autowired
     private MockMvc mockMvc;
+
     private UserCreationRequest request;
     private UserResponse userResponse;
     private LocalDate dob;
@@ -73,8 +75,7 @@ public class UserControllerIntegrationTest {
         String content = objectMapper.writeValueAsString(request);
 
         // WHEN, THEN
-        var response = mockMvc.perform(MockMvcRequestBuilders
-                        .post("/users")
+        var response = mockMvc.perform(MockMvcRequestBuilders.post("/users")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(content))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -85,5 +86,4 @@ public class UserControllerIntegrationTest {
 
         log.info("Result: {}", response.andReturn().getResponse().getContentAsString());
     }
-
 }

@@ -43,17 +43,15 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         HashSet<String> roles = new HashSet<>();
-//        roles.add(Role.USER.name());
+        //        roles.add(Role.USER.name());
 
-//        user.setRoles(roles);
+        //        user.setRoles(roles);
 
         return userMapper.toUserResponse(userRepository.save(user));
     }
 
     public UserResponse updateUser(String userId, UserUpdateRequest request) {
-        User user = userRepository
-                .findById(userId)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
         userMapper.updateUser(user, request);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -72,9 +70,8 @@ public class UserService {
         SecurityContext context = SecurityContextHolder.getContext();
         String username = context.getAuthentication().getName();
 
-        User user = userRepository
-                .findByUsername(username)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        User user =
+                userRepository.findByUsername(username).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
         return userMapper.toUserResponse(user);
     }
@@ -88,7 +85,7 @@ public class UserService {
     @PostAuthorize("returnObject.username == authentication.name")
     public UserResponse getUserById(String id) {
         log.info("In method getUserById");
-        return userMapper.toUserResponse(userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found.")));
+        return userMapper.toUserResponse(
+                userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found.")));
     }
-
 }

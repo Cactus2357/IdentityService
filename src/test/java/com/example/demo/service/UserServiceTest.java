@@ -80,7 +80,6 @@ public class UserServiceTest {
         // THEN
         assertThat(response.getId()).isEqualTo("e315e2905103");
         assertThat(response.getUsername()).isEqualTo("john");
-
     }
 
     @Test
@@ -103,7 +102,6 @@ public class UserServiceTest {
 
         assertThat(response.getUsername()).isEqualTo("john");
         assertThat(response.getId()).isEqualTo("e315e2905103");
-
     }
 
     @Test
@@ -112,10 +110,8 @@ public class UserServiceTest {
         when(userRepository.findByUsername(anyString())).thenReturn(Optional.ofNullable(null));
 
         // WHEN
-        var exception = assertThrows(AppException.class,
-                () -> userService.getMyInfo());
+        var exception = assertThrows(AppException.class, () -> userService.getMyInfo());
 
         assertThat(exception.getErrorCode().getCode()).isEqualTo(ErrorCode.USER_NOT_EXISTED.getCode());
-
     }
 }
