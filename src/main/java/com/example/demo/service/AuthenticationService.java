@@ -62,7 +62,7 @@ public class AuthenticationService {
         try {
             verifyToken(token, false);
             isValid = true;
-        } catch (AppException _) {
+        } catch (AppException e) {
         }
 
         return IntrospectResponse.builder()
@@ -102,7 +102,7 @@ public class AuthenticationService {
 
             invalidatedTokenRepository.save(invalidatedToken);
 
-        } catch (AppException _) {
+        } catch (AppException e) {
             log.info("Token is already expired");
         }
 
