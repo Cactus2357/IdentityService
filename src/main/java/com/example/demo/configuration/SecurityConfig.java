@@ -1,6 +1,5 @@
 package com.example.demo.configuration;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -19,12 +18,15 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    private final String[] PUBLIC_URLS = {
+    private static final String[] PUBLIC_URLS = {
             "/users", "/auth/token", "/auth/introspect", "/auth/logout", "/auth/refresh",
     };
 
-    @Autowired
-    private CustomJwtDecoder customJwtDecoder;
+    private final CustomJwtDecoder customJwtDecoder;
+
+    public SecurityConfig(CustomJwtDecoder customJwtDecoder) {
+        this.customJwtDecoder = customJwtDecoder;
+    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
@@ -52,18 +54,6 @@ public class SecurityConfig {
 
         return converter;
     }
-
-    //    @Bean
-    //    JwtDecoder jwtDecoder() {
-    //        SecretKeySpec secretKeySpec =
-    //                new SecretKeySpec(signerKey.getBytes(), "HS512");
-    //        NimbusJwtDecoder nimbusJwtDecoder = NimbusJwtDecoder
-    //                .withSecretKey(secretKeySpec)
-    //                .macAlgorithm(MacAlgorithm.HS512)
-    //                .build();
-    //
-    //        return nimbusJwtDecoder;
-    //    }
 
     @Bean
     PasswordEncoder passwordEncoder() {
