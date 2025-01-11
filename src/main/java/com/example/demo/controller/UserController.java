@@ -1,10 +1,9 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.request.ApiResponse;
 import com.example.demo.dto.request.UserCreationRequest;
 import com.example.demo.dto.request.UserUpdateRequest;
+import com.example.demo.dto.response.ApiResponse;
 import com.example.demo.dto.response.UserResponse;
-import com.example.demo.entity.User;
 import com.example.demo.service.UserService;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
@@ -33,13 +32,13 @@ public class UserController {
     }
 
     @GetMapping
-    public ApiResponse<List<User>> getAllUsers() {
+    public ApiResponse<List<UserResponse>> getAllUsers() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         log.info("Username: {}", authentication.getName());
         authentication.getAuthorities().forEach(grantedAuthority -> log.info(grantedAuthority.getAuthority()));
 
-        return ApiResponse.<List<User>>builder()
+        return ApiResponse.<List<UserResponse>>builder()
                 .result(userService.getAllUsers())
                 .build();
     }

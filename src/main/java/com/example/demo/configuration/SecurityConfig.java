@@ -55,12 +55,42 @@ public class SecurityConfig {
         corsConfiguration.addAllowedOrigin("*");
         corsConfiguration.addAllowedMethod("*");
         corsConfiguration.addAllowedHeader("*");
+        corsConfiguration.addExposedHeader("*");
+        corsConfiguration.setMaxAge(3600L);
 
-        UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
-        urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", corsConfiguration);
 
-        return new CorsFilter(urlBasedCorsConfigurationSource);
+        return new CorsFilter(source);
     }
+
+    //    @Bean
+    //    public WebMvcConfigurer corsConfigurer() {
+    //        return new WebMvcConfigurer() {
+    //            @Override
+    //            public void addCorsMappings(CorsRegistry registry) {
+    //                registry.addMapping("/**")
+    //                        .allowedOrigins("*")
+    //                        .allowedMethods("*")
+    //                        .allowedHeaders("*")
+    //                        .maxAge(3600);
+    //            }
+    //        };
+    //    }
+
+    //    @Bean
+    //    public FilterRegistrationBean corsFilter() {
+    //        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    //        CorsConfiguration config = new CorsConfiguration();
+    //        config.setAllowCredentials(true);
+    //        config.addAllowedOrigin("*");
+    //        config.addAllowedHeader("*");
+    //        config.addAllowedMethod("*");
+    //        source.registerCorsConfiguration("/**", config);
+    //        FilterRegistrationBean bean = new FilterRegistrationBean(new CorsFilter(source));
+    //        bean.setOrder(Ordered.HIGHEST_PRECEDENCE);
+    //        return bean;
+    //    }
 
     JwtAuthenticationConverter jwtAuthenticationConverter() {
         JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();

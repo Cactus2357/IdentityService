@@ -7,8 +7,9 @@ import lombok.experimental.FieldDefaults;
 import java.time.LocalDate;
 import java.util.Set;
 
-@Getter
-@Setter
+// @Getter
+// @Setter
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,6 +20,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.UUID)
     String id;
 
+    @Column(unique = true, nullable = false, columnDefinition = "VARCHAR(255) COLLATE utf8mb4_unicode_ci")
     String username;
 
     String password;

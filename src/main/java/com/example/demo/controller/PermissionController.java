@@ -1,7 +1,7 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.request.ApiResponse;
 import com.example.demo.dto.request.PermissionRequest;
+import com.example.demo.dto.response.ApiResponse;
 import com.example.demo.dto.response.PermissionResponse;
 import com.example.demo.service.PermissionService;
 import lombok.AccessLevel;
