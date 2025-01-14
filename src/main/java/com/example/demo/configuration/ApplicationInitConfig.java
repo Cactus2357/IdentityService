@@ -33,10 +33,7 @@ public class ApplicationInitConfig {
     static final String ADMIN_PASSWORD = "12345678";
 
     @Bean
-    @ConditionalOnProperty(
-            prefix = "spring",
-            value = "datasource.driverClassName",
-            havingValue = "com.mysql.cj.jdbc.Driver")
+    @ConditionalOnProperty(prefix = "spring", value = "datasource.driverClassName", havingValue = "com.mysql.cj.jdbc.Driver")
     ApplicationRunner applicationRunner(UserRepository userRepository, RoleRepository roleRepository) {
         return args -> {
             log.info("Init application...");
@@ -46,13 +43,13 @@ public class ApplicationInitConfig {
             }
 
             roleRepository.save(Role.builder()
-                    .name(PredefinedRole.ADMIN_ROLE)
-                    .description("Admin role")
+                    .name(PredefinedRole.USER_ROLE)
+                    .description("User role")
                     .build());
 
             Role adminRole = roleRepository.save(Role.builder()
-                    .name(PredefinedRole.USER_ROLE)
-                    .description("User role")
+                    .name(PredefinedRole.ADMIN_ROLE)
+                    .description("Admin role")
                     .build());
 
             HashSet<Role> roles = new HashSet<Role>();
